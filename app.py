@@ -36,7 +36,7 @@ def load_raw():
 
 @st.cache_data
 def load_cleaned():
-    return pd.read_pickle("cleaned_train.pickle")
+    return pd.read_pickle("Cleaned_train.pickle")
 
 @st.cache_resource
 def load_clf():
