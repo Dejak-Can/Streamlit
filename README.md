@@ -31,11 +31,6 @@ To run this application locally:
    streamlit run app.py
    ```
 
-## Usage
-1. Upload your dataset (CSV or Excel format)
-2. Select visualization options from the sidebar
-3. Interact with the generated charts and tables
-4. Export your results if needed
 
 ## Requirements
 - Python 3.8+
