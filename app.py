@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
-from ydata_profiling import ProfileReport
+
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -58,10 +58,6 @@ if page == "EDA":
     st.table(raw_df.isna().sum())
     st.subheader("Raw Data Sample")
     st.dataframe(raw_df.head(20))
-    with st.expander("Download Full Profile Report"):
-        profile = ProfileReport(raw_df, title="Raw Data Profile", explorative=True)
-        profile.to_file("raw_profile.html")
-        st.markdown("[Download HTML report](raw_profile.html)")
     st.subheader("Summary Statistics")
     st.dataframe(raw_df.describe(include="all").T)
 
