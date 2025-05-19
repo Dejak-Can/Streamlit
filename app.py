@@ -1,4 +1,4 @@
-# Optimized app.py
+# Optimized app.py (Stable Emoji Fix & Performance Tweaks)
 
 import streamlit as st
 import pandas as pd
@@ -17,17 +17,15 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 
-# Guard XGBoost import
 try:
     from xgboost import XGBClassifier
     has_xgb = True
 except ImportError:
     has_xgb = False
-    st.sidebar.warning("\u26a0\ufe0f XGBoost not installed; skipping XGBoost option.")
+    st.sidebar.warning("⚠️ XGBoost not installed; skipping XGBoost option.")
 
-st.set_page_config(page_title="\ud83c\udfaf Tuwaiq Admissions Dashboard", layout="wide")
+st.set_page_config(page_title="Tuwaiq Admissions Dashboard", layout="wide")
 
-# -- Data loading ------------------------------------------------------
 @st.cache_data
 
 def load_cleaned():
@@ -40,36 +38,32 @@ def load_clf():
 
 cleaned_df = load_cleaned()
 
-# Sidebar navigation
 st.sidebar.title("Controls")
 page = st.sidebar.radio("View", ["EDA", "Cleaning", "Modeling", "Predict"])
 
-# EDA Page
 if page == "EDA":
-    st.header("\ud83d\udd0d Exploratory Data Analysis")
+    st.header("Exploratory Data Analysis")
     st.subheader("Sample & Stats")
     st.dataframe(cleaned_df.head(10))
     st.dataframe(cleaned_df.describe(include="all").T)
 
-# Cleaning Page
 elif page == "Cleaning":
-    st.header("\ud83e\uddf9 Data Cleaning Steps")
+    st.header("Data Cleaning Steps")
     df = cleaned_df.copy()
     df.drop(columns=[c for c in df.columns if c.startswith("Home Region")], inplace=True)
     df['Age'].fillna(df['Age'].median(), inplace=True)
     st.dataframe(df.head(10))
     st.table(df.isna().sum())
 
-# Modeling Page
 elif page == "Modeling":
-    st.header("\ud83e\udd16 Model Training")
+    st.header("Model Training")
     X = cleaned_df.drop("Y", axis=1)
     y = cleaned_df["Y"]
 
     cat_cols = X.select_dtypes(include=["object"]).columns.tolist()
     if "Program Skill Level" in cat_cols:
         cat_cols.remove("Program Skill Level")
-    skill_order = [["\u0645\u062a\u0642\u062f\u0645", "\u0645\u062a\u0648\u0633\u0637", "\u0645\u0628\u062a\u062f\u0626", "\u0645\u0641\u0642\u0648\u062f"]]
+    skill_order = [["متقدم", "متوسط", "مبتدئ", "مفقود"]]
 
     preproc = ColumnTransformer([
         ("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols),
@@ -112,14 +106,13 @@ elif page == "Modeling":
         ax.set_xlabel("Predicted"); ax.set_ylabel("Actual")
         st.pyplot(fig)
 
-# Predict Page
 elif page == "Predict":
-    st.header("\ud83d\udd2e Predict an Applicant")
+    st.header("Predict an Applicant")
     X = cleaned_df.drop("Y", axis=1)
     cat_cols = X.select_dtypes(include=["object"]).columns.tolist()
     if "Program Skill Level" in cat_cols:
         cat_cols.remove("Program Skill Level")
-    skill_order = [["\u0645\u062a\u0642\u062f\u0645", "\u0645\u062a\u0648\u0633\u0637", "\u0645\u0628\u062a\u062f\u0626", "\u0645\u0641\u0642\u0648\u062f"]]
+    skill_order = [["متقدم", "متوسط", "مبتدئ", "مفقود"]]
 
     preproc = ColumnTransformer([
         ("cat", OneHotEncoder(handle_unknown="ignore"), cat_cols),
