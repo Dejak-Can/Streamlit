@@ -6,7 +6,6 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 
-
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     accuracy_score, classification_report, confusion_matrix,
@@ -198,21 +197,23 @@ elif page == "Predict":
     preproc.fit(X)
 
     # Model selector in Predict
-    model_options = ["Saved Model"]
-    if has_xgb:
-        model_options.append("XGBoost")
-    model_choice = st.selectbox("Choose model", model_options)
+    model_choice = "XGBoost"
 
     # Dynamic manual input form
     user_input = {}
     with st.form("single_app_form"):
         for col in X.columns:
-            if pd.api.types.is_numeric_dtype(X[col]):
-                mn, mx, md = float(X[col].min()), float(X[col].max()), float(X[col].median())
+            if col == "Gender_ذكر" or col == 'College_تكنولوجيا الاتصالات والمعلومات' :
+                user_input[col] = st.selectbox(f"{col}", options=[True, False], key=col)
+                # Convert True/False to 1/0 if model expects numerical input
+                user_input[col] = int(user_input[col])
+            elif pd.api.types.is_numeric_dtype(X[col]):
+                mn, mx, md = int(X[col].min()), int(X[col].max()), int(X[col].median())
                 user_input[col] = st.number_input(f"{col}", min_value=mn, max_value=mx, value=md, key=col)
             else:
                 opts = X[col].dropna().unique().tolist()
                 user_input[col] = st.selectbox(f"{col}", opts, key=col)
+
         submitted = st.form_submit_button("Predict")
 
     if submitted:
@@ -249,6 +250,7 @@ elif page == "Predict":
             pipeline_xgb = Pipeline([("prep", proc_xgb), ("clf", xgb_clf)])
             pipeline_xgb.fit(cleaned_df.drop("Y", axis=1), cleaned_df["Y"])
             prob = pipeline_xgb.predict_proba(row)[0, 1]
+            
 
         st.subheader("🎲 Completion Probability")
-        st.write(f"{prob:.1%}")
+        st.write(f"{1 - prob:.1%}")
