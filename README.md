@@ -11,7 +11,7 @@ This Streamlit application provides an interactive interface for data analysis a
 
 ## Live Demo
 Access the live application here:  
-[https://tuwaiq-elite-training-programs.streamlit.app/](https://tuwaiq-elite-training-programs.streamlit.app/)
+[https://tuwaiq-elite-training-programs.streamlit.app/](https://tuwaiq-studentevo.streamlit.app/)
 
 ## Installation
 To run this application locally:
